@@ -1,26 +1,43 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, { Component } from 'react';
 import './App.css';
+import axios from 'axios';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+class App extends Component {
+
+    constructor(props) {
+        super(props);
+        this.state = { loaded: false, num: 0 };
+    }
+
+    componentDidMount() {
+        axios.get('https://api.github.com/search/repositories?q=covid-tracker')
+            .then(res => {
+                this.setState({
+                    loaded: true,
+                    num: res.data.total_count
+                });
+            });
+    }
+
+    render() {
+        return (
+            <div className="App">
+                <header className="App-header">
+                { this.state.loaded ? (
+                    <p>There are {this.state.num} Covid-19 trackers on Github</p>
+                ) : (
+                    <></>
+                )}
+                <a
+                  className="App-link"
+                  href="https://github.com/search?q=covid-19+tracker"
+                >
+                    Source 
+                </a>
+                </header>
+            </div>
+        );
+    }
 }
 
 export default App;
